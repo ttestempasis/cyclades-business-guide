@@ -18,6 +18,15 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Check, MapPin, Store, Hotel, Utensils, ShoppingBag, Briefcase, Search, SlidersHorizontal, Star } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import SearchBar from "@/components/SearchBar";
@@ -30,6 +39,10 @@ const Index = () => {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [priceRange, setPriceRange] = useState([50]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [afmNumber, setAfmNumber] = useState("");
+  const [gemiNumber, setGemiNumber] = useState("");
+  const [activityCodes, setActivityCodes] = useState("");
+  const [legalEntityType, setLegalEntityType] = useState("");
 
   const categories = [
     { icon: <Utensils size={24} />, name: "Restaurants", count: 245 },
@@ -37,6 +50,17 @@ const Index = () => {
     { icon: <ShoppingBag size={24} />, name: "Retail", count: 167 },
     { icon: <Briefcase size={24} />, name: "Services", count: 132 },
     { icon: <Store size={24} />, name: "Food & Drinks", count: 98 },
+  ];
+
+  const legalEntityTypes = [
+    "Ατομική Επιχείρηση",
+    "Ο.Ε.",
+    "Ε.Ε.",
+    "Ε.Π.Ε.",
+    "Α.Ε.",
+    "Ι.Κ.Ε.",
+    "Συνεταιρισμός",
+    "Άλλο"
   ];
 
   const islands = [
@@ -56,6 +80,20 @@ const Index = () => {
         ? prev.filter(c => c !== category) 
         : [...prev, category]
     );
+  };
+
+  const handleAdvancedSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Construct search parameters with new fields
+    const searchParams = new URLSearchParams();
+    if (afmNumber) searchParams.append("afm", afmNumber);
+    if (gemiNumber) searchParams.append("gemi", gemiNumber);
+    if (activityCodes) searchParams.append("codes", activityCodes);
+    if (legalEntityType) searchParams.append("entityType", legalEntityType);
+    if (selectedCategories.length > 0) searchParams.append("categories", selectedCategories.join(","));
+    if (priceRange[0] !== 50) searchParams.append("priceRange", priceRange[0].toString());
+    
+    window.location.href = `/search?${searchParams.toString()}`;
   };
 
   return (
@@ -96,10 +134,61 @@ const Index = () => {
               <SearchBar />
               
               {showAdvancedSearch && (
-                <div className="mt-4 pt-4 border-t">
+                <form onSubmit={handleAdvancedSearch} className="mt-4 pt-4 border-t">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
-                      <label className="block text-sm font-medium mb-1">Price Range</label>
+                      <Label htmlFor="afm">ΑΦΜ</Label>
+                      <Input 
+                        id="afm"
+                        type="text"
+                        placeholder="Αριθμός Φορολογικού Μητρώου" 
+                        value={afmNumber}
+                        onChange={(e) => setAfmNumber(e.target.value)}
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="gemi">ΓΕΜΗ</Label>
+                      <Input 
+                        id="gemi"
+                        type="text"
+                        placeholder="Αριθμός Γενικού Εμπορικού Μητρώου" 
+                        value={gemiNumber}
+                        onChange={(e) => setGemiNumber(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <Label htmlFor="activityCodes">Κωδικοί Δραστηριότητας</Label>
+                      <Input 
+                        id="activityCodes"
+                        type="text"
+                        placeholder="π.χ. 55.10, 56.10" 
+                        value={activityCodes}
+                        onChange={(e) => setActivityCodes(e.target.value)}
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="legalEntityType">Νομική Μορφή</Label>
+                      <Select value={legalEntityType} onValueChange={setLegalEntityType}>
+                        <SelectTrigger id="legalEntityType">
+                          <SelectValue placeholder="Επιλέξτε νομική μορφή" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {legalEntityTypes.map(type => (
+                            <SelectItem key={type} value={type}>{type}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <Label className="block text-sm font-medium mb-1">Price Range</Label>
                       <div className="px-2">
                         <Slider
                           defaultValue={[50]}
@@ -118,7 +207,7 @@ const Index = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium mb-1">Rating</label>
+                      <Label className="block text-sm font-medium mb-1">Rating</Label>
                       <div className="flex items-center gap-2">
                         {[1, 2, 3, 4, 5].map((rating) => (
                           <Button 
@@ -135,7 +224,7 @@ const Index = () => {
                   </div>
                   
                   <div className="mb-4">
-                    <label className="block text-sm font-medium mb-1">Categories</label>
+                    <Label className="block text-sm font-medium mb-1">Categories</Label>
                     <ScrollArea className="h-20 rounded border p-2">
                       <div className="flex flex-wrap gap-2">
                         {categories.map((category) => (
@@ -161,11 +250,11 @@ const Index = () => {
                   </div>
                   
                   <div className="flex justify-end">
-                    <Button className="bg-cyclades-yellow hover:bg-yellow-500 text-black font-medium">
+                    <Button type="submit" className="bg-cyclades-yellow hover:bg-yellow-500 text-black font-medium">
                       Search with Filters
                     </Button>
                   </div>
-                </div>
+                </form>
               )}
             </div>
           </div>
