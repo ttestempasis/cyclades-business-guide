@@ -165,18 +165,20 @@ const SearchResults = () => {
                 </Select>
                 
                 {/* View Toggle */}
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="hidden md:block">
-                  <TabsList>
-                    <TabsTrigger value="list" className="flex items-center">
-                      <List size={16} className="mr-1" />
-                      List
-                    </TabsTrigger>
-                    <TabsTrigger value="map" className="flex items-center">
-                      <Map size={16} className="mr-1" />
-                      Map
-                    </TabsTrigger>
-                  </TabsList>
-                </Tabs>
+                <div className="hidden md:block">
+                  <Tabs value={activeTab} onValueChange={setActiveTab}>
+                    <TabsList>
+                      <TabsTrigger value="list" className="flex items-center">
+                        <List size={16} className="mr-1" />
+                        List
+                      </TabsTrigger>
+                      <TabsTrigger value="map" className="flex items-center">
+                        <Map size={16} className="mr-1" />
+                        Map
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                </div>
               </div>
             </div>
             
@@ -237,7 +239,7 @@ const SearchResults = () => {
             
             {/* Mobile View Tabs */}
             <div className="md:hidden mb-4">
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="list" className="flex items-center justify-center">
                     <List size={16} className="mr-1" />
@@ -252,27 +254,29 @@ const SearchResults = () => {
             </div>
             
             {/* Results Content */}
-            <TabsContent value="list" className="mt-0">
-              {filteredBusinesses.length > 0 ? (
-                <BusinessList businesses={filteredBusinesses} showLoadMore={true} />
-              ) : (
-                <div className="text-center p-12 bg-white rounded-lg border border-gray-100">
-                  <h2 className="text-xl font-semibold mb-2">No results found</h2>
-                  <p className="text-gray-600 mb-4">
-                    Try adjusting your search or filters to find what you're looking for.
-                  </p>
-                  <Button variant="outline" onClick={() => window.history.back()}>
-                    Go Back
-                  </Button>
+            <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue={activeTab}>
+              <TabsContent value="list" className="mt-0">
+                {filteredBusinesses.length > 0 ? (
+                  <BusinessList businesses={filteredBusinesses} showLoadMore={true} />
+                ) : (
+                  <div className="text-center p-12 bg-white rounded-lg border border-gray-100">
+                    <h2 className="text-xl font-semibold mb-2">No results found</h2>
+                    <p className="text-gray-600 mb-4">
+                      Try adjusting your search or filters to find what you're looking for.
+                    </p>
+                    <Button variant="outline" onClick={() => window.history.back()}>
+                      Go Back
+                    </Button>
+                  </div>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="map" className="mt-0">
+                <div className="h-[700px] bg-white rounded-lg border border-gray-100 overflow-hidden">
+                  <MapView className="h-full" />
                 </div>
-              )}
-            </TabsContent>
-            
-            <TabsContent value="map" className="mt-0">
-              <div className="h-[700px] bg-white rounded-lg border border-gray-100 overflow-hidden">
-                <MapView className="h-full" />
-              </div>
-            </TabsContent>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </main>

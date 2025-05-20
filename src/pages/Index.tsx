@@ -106,26 +106,30 @@ const Index = () => {
       <section className="container mx-auto px-4 py-12">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold">Featured Businesses</h2>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-[240px]">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="listings">Listings</TabsTrigger>
-              <TabsTrigger value="map">Map</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="w-[240px]">
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="listings">Listings</TabsTrigger>
+                <TabsTrigger value="map">Map</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
 
         <div className="rounded-lg overflow-hidden border border-gray-100">
-          <TabsContent value="listings" className="mt-0">
-            <div className="p-4 md:p-6 bg-white">
-              <BusinessList />
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="map" className="mt-0">
-            <div className="h-[600px]">
-              <MapView className="h-full" />
-            </div>
-          </TabsContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue={activeTab}>
+            <TabsContent value="listings" className="mt-0">
+              <div className="p-4 md:p-6 bg-white">
+                <BusinessList />
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="map" className="mt-0">
+              <div className="h-[600px]">
+                <MapView className="h-full" />
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
 
         <div className="text-center mt-8">
