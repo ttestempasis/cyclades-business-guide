@@ -25,6 +25,15 @@ interface MapProps {
   className?: string;
 }
 
+// Add this type to fix the MapContainer issue
+interface ExtendedMapContainerProps {
+  center: [number, number];
+  zoom: number;
+  scrollWheelZoom: boolean;
+  className: string;
+  children: React.ReactNode;
+}
+
 const MapView = ({ className = "" }: MapProps) => {
   const [loaded, setLoaded] = useState(false);
   
@@ -46,6 +55,7 @@ const MapView = ({ className = "" }: MapProps) => {
         zoom={10} 
         scrollWheelZoom={false}
         className="map-container"
+        style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
