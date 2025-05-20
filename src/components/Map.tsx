@@ -1,7 +1,9 @@
 
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+// Import local CSS that includes Leaflet styles
+import "./leaflet-styles.css"; 
+// Import Leaflet
 import L from "leaflet";
 
 // Fix for default marker icons
@@ -38,6 +40,7 @@ const MapView = ({ className = "" }: MapProps) => {
   const [loaded, setLoaded] = useState(false);
   
   useEffect(() => {
+    // Set loaded to true after component mounts
     setLoaded(true);
   }, []);
 
